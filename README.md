@@ -1,15 +1,17 @@
 # What It Does
 
 It creates a GATT server and exposes characteristics through which you can
-set up WiFi connection to AP.
+set up WiFi connection of the Raspberry Pi.
 
 
 # Dependencies
 
-This python program relies on the python GATT servere example for the Raspberry
+This python program relies on the python GATT server example for the Raspberry
 Pi by [Douglas Otwell.](https://github.com/Douglas6/cputemp)
 
-You need to copy following files from the above repository into the folder:
+Once you clond this repo, you need to copy following files from the above
+repository into the folder:
+
 * advertisement.py
 * bletools.py
 * service.py
@@ -24,11 +26,12 @@ You need to copy following files from the above repository into the folder:
 # How to Use
 
 Be sure to meet the dependency requirements above.
-Run the script with root previlege:
+Run the script with root privilege:
 ```
 $ sudo python3 wifisetup.py
 ```
 
 Use [nRF Connect app](https://play.google.com/store/apps/details?id=no.nordicsemi.android.mcp&hl=en_CA&gl=US), set SSID and PSK of the access point.
-Then write any value to `Restart WiFi Network` characteristic.
-You can periodically read `IP Address` characteristics or subscribe for notification.
+Then write any value, e.g. `0x00` to `Restart WiFi Network` characteristic.
+You can read periodically `IP Address` characteristics to monitor the
+connection state.
