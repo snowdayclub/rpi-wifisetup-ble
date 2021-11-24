@@ -128,7 +128,7 @@ class IPAddrCharacteristic(Characteristic):
         value = []
         result = subprocess.run(['hostname', '--all-ip-addresses'],
                 stdout=subprocess.PIPE)
-        ipaddr = result.stdout.decode('utf-8').rstrip()
+        ipaddr = result.stdout.decode('utf-8').split(' ')[0].rstrip()
 
         for c in ipaddr:
             value.append(dbus.Byte(c.encode()))
