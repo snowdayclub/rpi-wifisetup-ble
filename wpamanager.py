@@ -118,5 +118,5 @@ class WPAManager:
     def get_current_ipaddress(self):
         result = subprocess.run(['hostname', '--all-ip-addresses'],
                 stdout=subprocess.PIPE)
-        return result.stdout.decode('utf-8').rstrip()
+        return result.stdout.decode('utf-8').split(' ')[0].rstrip()
 

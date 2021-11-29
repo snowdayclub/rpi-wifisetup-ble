@@ -12,7 +12,7 @@ if __name__=='__main__':
     wpa = WPAManager()
 
     print(wpa.get_network_list())
-    wpa.set_network({'ssid':'my_ssid', 'psk':'my_ssid_secret', 'foo':'bar'})
+    wpa.set_network({'ssid':'MyAccessPoint', 'psk':'MySuperSecret', 'foo':'bar'})
     print(wpa.get_network_list())
     print('restarting wifi')
     wpa.reconfigure()
