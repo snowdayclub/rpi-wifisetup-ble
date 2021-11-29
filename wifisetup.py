@@ -23,10 +23,6 @@ class DeviceAdvertisement(Advertisement):
         self.add_local_name("RPi WiFi Setup")
         self.include_tx_power = True
 
-        self.ssid = ''
-        self.psk = ''
-        self.ipaddr = ''
-
 
 class DeviceService(Service):
     DEVICE_SERVICE_UUID = "00000001-710e-4a5b-8d75-3e5b444bc3cf"
@@ -48,14 +44,24 @@ class SSIDCharacteristic(Characteristic):
                 ["read", "write"], service)
         self.add_descriptor(SSIDDescriptor(self))
 
+    def get_ssid(self):
+        value = []
+        ssid = ''
+        result = subprocess.run(['iwgetid'], stdout=subprocess.PIPE)
+        output = result.stdout.decode('utf-8')
+        if 'ESSID' in output:
+            ssid = output[output.find('\"')+1:output.rfind('\"')]
+
+        for c in ssid:
+            value.append(dbus.Byte(c.encode()))
+
+        return value
+
     def WriteValue(self, value, options):
         self.service.ssid = ''.join([str(v) for v in value])
 
     def ReadValue(self, options):
-        value = []
-
-        for c in self.service.ssid:
-            value.append(dbus.Byte(c.encode()))
+        value = self.get_ssid()
 
         return value
 
