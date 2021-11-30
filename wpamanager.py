@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 import subprocess
 
+WPA_SUPPLICANT_CONF = '/etc/wpa_supplicant/wpa_supplicant.conf'
 
 class WPAManager:
     def __init__(self):
-        self._config_file = '/etc/wpa_supplicant/wpa_supplicant.conf'
+        self._config_file = WPA_SUPPLICANT_CONF
         self._load_config()
 
     def _default_config(self):
@@ -18,33 +19,34 @@ class WPAManager:
         ntw = False
         with open(self._config_file, 'r') as f:
             for line in f:
-                if 'ctrl_interface' in line:
-                    self._ctrl_interface = line[line.find('=')+1:].rstrip()
-                elif 'update_config' in line:
-                    self._update_config = line[line.find('=')+1:].rstrip()
-                elif 'country' in line:
-                    self._country = line[line.find('=')+1:].rstrip()
-                elif 'network' in line:
+                line = line.strip().rstrip()
+                if line.startswith('ctrl_interface'):
+                    self._ctrl_interface = line[line.find('=')+1:]
+                elif line.startswith('update_config'):
+                    self._update_config = line[line.find('=')+1:]
+                elif line.startswith('country'):
+                    self._country = line[line.find('=')+1:]
+                elif line.startswith('network'):
                     ntw = True
                     network = {}
                 elif ntw:
-                    if 'ssid' in line:
+                    if line.startswith('ssid'):
                         network['ssid'] = line[
-                                line.find('\"')+1: line.rfind('\"')].rstrip()
-                    elif 'psk' in line:
+                                line.find('\"')+1: line.rfind('\"')]
+                    elif line.startswith('psk'):
                         network['psk'] = line[
-                                line.find('\"')+1: line.rfind('\"')].rstrip()
-                    elif 'scan_ssid' in line:
-                        network['scan_ssid'] = line[line.find('='):].rstrip()
-                    elif 'proto' in line:
-                        network['proto'] = line[line.find('='):].rstrip()
-                    elif 'key_mgmt' in line:
-                        network['key_mgmt'] = line[line.find('='):].rstrip()
-                    elif 'pairwise' in line:
-                        network['pairwise'] = line[line.find('='):].rstrip()
-                    elif 'auth_alg' in line:
-                        network['auth_alg'] = line[line.find('='):].rstrip()
-                    elif '}' in line:
+                                line.find('\"')+1: line.rfind('\"')]
+                    elif line.startswith('scan_ssid'):
+                        network['scan_ssid'] = line[line.find('='):]
+                    elif line.startswith('proto'):
+                        network['proto'] = line[line.find('='):]
+                    elif line.startswith('key_mgmt'):
+                        network['key_mgmt'] = line[line.find('='):]
+                    elif line.startswith('pairwise'):
+                        network['pairwise'] = line[line.find('='):]
+                    elif line.startswith('auth_alg'):
+                        network['auth_alg'] = line[line.find('='):]
+                    elif line.startswith('}'):
                         ntw = False
                         self._networks.append(network)
 
@@ -69,7 +71,9 @@ class WPAManager:
                     f.write('\tpairwise=\"{}\"\n'.format(network['pairwise']))
                 if 'auth_alg' in network:
                     f.write('\tauth_alg=\"{}\"\n'.format(network['auth_alg']))
+
                 f.write('}\n')
+
 
     def _show_config(self):
         print('config file:', self._config_file)
